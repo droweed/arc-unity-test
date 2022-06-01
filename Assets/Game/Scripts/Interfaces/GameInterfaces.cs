@@ -9,6 +9,11 @@ namespace gotoandplay
         void Pickup();
     }
 
+    public interface ICollidable
+    {
+        void DeductPoints(int value);
+    }
+
     public interface IKillable
     {
         void TakeDamage();

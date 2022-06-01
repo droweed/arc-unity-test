@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace gotoandplay
@@ -8,6 +9,9 @@ namespace gotoandplay
     public class GameController : MonoBehaviour
     {
         public static GameController I;
+
+        [HideInInspector]
+        public UnityEvent<GameState> onGameStateChanged;
 
         private GameState gameState = GameState.IN_GAME;
 
@@ -69,9 +73,23 @@ namespace gotoandplay
             // if points reached the goal points, game is complete
             if (currentPlayerPoints >= goalPoints)
             {
-                isLevelComplete = true;
-                gamehudView.ShowLevelComplete();
                 SetGameState(GameState.COMPLETE);
+            }
+        }
+
+        public void DeductPoints(int value)
+        {
+            currentPlayerPoints -= value;
+            // clamp in case we get negative value
+
+            currentPlayerPoints = Mathf.Clamp(currentPlayerPoints, 0, goalPoints);
+            gamehudView.UpdatePointsLabel(currentPlayerPoints, goalPoints);
+
+            // check if the player has 0 points after deduct, then its game over
+            if (currentPlayerPoints <= 0)
+            {
+                // game over as well
+                SetGameState(GameState.GAMEOVER);
             }
         }
 
@@ -80,18 +98,21 @@ namespace gotoandplay
             if (IsLevelComplete)
                 return;
 
-            gameState = GameState.GAMEOVER;
+            gameState = state;
+            onGameStateChanged.Invoke(gameState);
 
-            switch(gameState)
+            switch (gameState)
             {
                 case GameState.LOBBY:
                     break;
                 case GameState.IN_GAME:
                     break;
                 case GameState.COMPLETE:
+                    isLevelComplete = true;
                     gamehudView.ShowLevelComplete();
                     break;
                 case GameState.GAMEOVER:
+                    isLevelComplete = true;
                     gamehudView.ShowGameOver();
                     break;
             }

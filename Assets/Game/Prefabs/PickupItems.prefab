@@ -176,6 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   points: 5
+  pickupClip: {fileID: 8300000, guid: e91aeb4aa61aa2b4d9390dcf682d658e, type: 3}
 --- !u!65 &6954963441570360633
 BoxCollider:
   m_ObjectHideFlags: 0

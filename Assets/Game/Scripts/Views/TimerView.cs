@@ -13,26 +13,28 @@ namespace gotoandplay
 
         public TextMeshProUGUI label;
 
-        public  float currentTimerValue = GameConstants.StartingTimerValue; // default value is 90
+        public  float currentTimerValue; // default value is 90
         
         private void Start()
         {
-            // pretty sure this gets enabled only when start is pressed. (for now)
             Init();
+            SubscribeEvents();
+        }
+
+        private void OnDestroy()
+        {
+            UnSubscribeEvents();
         }
 
         private void Init()
         {
+            currentTimerValue = GameConstants.StartingTimerValue;
+
             // only run if we have reference to the text component
             if (label)
             {
                 timerArray = currentTimerValue.ToString("0.00").Split(".");
                 label.text = string.Format("{0}<size=32>.{1}s</size>", timerArray[0], timerArray[1]);
-                DOVirtual.DelayedCall(2f, () =>
-                {
-                    Debug.Log("Game started!");
-                    StartCoroutine(CoroutineTimerStart());
-                });
             }
         }
 
@@ -67,5 +69,36 @@ namespace gotoandplay
             // set game state to gameover since time ran out.
             GameController.I.SetGameState(GameState.GAMEOVER);
         }
+
+        #region - event sub methods
+        private void SubscribeEvents()
+        {
+            if (GameController.I)
+            {
+                GameController.I.onGameStateChanged.AddListener(GameStateChangeHandler);
+            }
+        }
+        private void UnSubscribeEvents()
+        {
+            if (GameController.I)
+            {
+                GameController.I.onGameStateChanged.RemoveListener(GameStateChangeHandler);
+            }
+        }
+
+        private void GameStateChangeHandler(GameState newState)
+        {
+            switch (newState)
+            {
+                case GameState.IN_GAME:
+                    // game started, start timer.
+                    StartCoroutine(CoroutineTimerStart());
+                    break;
+                case GameState.COMPLETE:
+                case GameState.GAMEOVER:
+                    break;
+            }
+        }
+        #endregion
     }
 }

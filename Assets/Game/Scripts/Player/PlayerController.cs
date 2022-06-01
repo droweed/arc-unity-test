@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace gotoandplay
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, ICollidable
     {
         private void Start()
         {
@@ -19,5 +19,12 @@ namespace gotoandplay
                 pickupable.Pickup();
             }
         }
+
+        #region - interface methods
+        public void DeductPoints(int value)
+        {
+            GameController.I.DeductPoints(value);
+        }
+        #endregion
     }
 }

@@ -5,4 +5,5 @@ public class GameConstants
 {
     public const int GoalPoints = 100;
     public const float StartingTimerValue = 90;
+    public const int HitDeductValue = 15;
 }
