@@ -3,6 +3,12 @@
 ## Name
 Coding-Challenge
 
+## Game Notes:
+
+ ```
+ # Preferred Viewport Aspect: 9:16
+ ```
+
 ## Game Mechanics
 
  ```
