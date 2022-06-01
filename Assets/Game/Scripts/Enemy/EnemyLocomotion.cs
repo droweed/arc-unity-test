@@ -10,6 +10,7 @@ namespace gotoandplay
         EnemyController controller;
         AIPath aiController;
         AIDestinationSetter destinationSetter;
+        AnimationController animationController;
 
         private void Start()
         {
@@ -27,6 +28,22 @@ namespace gotoandplay
             controller = GetComponent<EnemyController>();
             destinationSetter = GetComponent<AIDestinationSetter>();
             aiController = GetComponent<AIPath>();
+            animationController = GetComponent<AnimationController>();
+        }
+
+        private void FixedUpdate()
+        {
+            if(aiController && animationController)
+            {
+                if(aiController.movementVelocity != Vector2.zero)
+                {
+                    animationController.SetState(AnimationController.AnimState.MOVE);
+                } 
+                else
+                {
+                    animationController.SetState(AnimationController.AnimState.IDLE);
+                }
+            }
         }
 
         #region - event sub methods

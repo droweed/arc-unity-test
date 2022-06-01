@@ -23,9 +23,12 @@ namespace gotoandplay
         private Vector3 moveDirection;
         private Vector3 targetDir;
 
+        private AnimationController animationController;
+
         private void Awake()
         {
             mRigidbody = GetComponent<Rigidbody>();
+            animationController = GetComponent<AnimationController>();
         }
 
 
@@ -57,6 +60,7 @@ namespace gotoandplay
         {
             Move();
             Turn();
+            HandleAnimation();
         }
 
         private void HandleUserInput()
@@ -108,6 +112,18 @@ namespace gotoandplay
 
                     playerModel.rotation = targetRotation;
                 }
+            }
+        }
+
+        private void HandleAnimation()
+        {
+            if(moveDirection != Vector3.zero)
+            {
+                animationController.SetState(AnimationController.AnimState.MOVE);
+            } 
+            else
+            {
+                animationController.SetState(AnimationController.AnimState.IDLE);
             }
         }
 

@@ -162,6 +162,8 @@ namespace Pathfinding {
 		/// <summary>Helper which calculates points along the current path</summary>
 		protected PathInterpolator interpolator = new PathInterpolator();
 
+		public Vector2 movementVelocity;	// helper property to track movement
+
 		#region IAstarAI implementation
 
 		/// <summary>\copydoc Pathfinding::IAstarAI::Teleport</summary>
@@ -392,6 +394,7 @@ namespace Pathfinding {
 			}
 
 			velocity2D = MovementUtilities.ClampVelocity(velocity2D, maxSpeed, slowdown, slowWhenNotFacingTarget && enableRotation, forwards);
+			movementVelocity = velocity2D;
 
 			ApplyGravity(deltaTime);
 

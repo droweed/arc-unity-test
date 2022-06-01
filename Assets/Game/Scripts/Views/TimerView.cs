@@ -15,15 +15,9 @@ namespace gotoandplay
 
         public  float currentTimerValue; // default value is 90
         
-        private void Start()
+        private void OnEnable()
         {
             Init();
-            SubscribeEvents();
-        }
-
-        private void OnDestroy()
-        {
-            UnSubscribeEvents();
         }
 
         private void Init()
@@ -35,6 +29,12 @@ namespace gotoandplay
             {
                 timerArray = currentTimerValue.ToString("0.00").Split(".");
                 label.text = string.Format("{0}<size=32>.{1}s</size>", timerArray[0], timerArray[1]);
+
+                // start timer
+                DOVirtual.DelayedCall(1f, () =>
+                {
+                    StartCoroutine(CoroutineTimerStart());
+                });
             }
         }
 
@@ -70,35 +70,5 @@ namespace gotoandplay
             GameController.I.SetGameState(GameState.GAMEOVER);
         }
 
-        #region - event sub methods
-        private void SubscribeEvents()
-        {
-            if (GameController.I)
-            {
-                GameController.I.onGameStateChanged.AddListener(GameStateChangeHandler);
-            }
-        }
-        private void UnSubscribeEvents()
-        {
-            if (GameController.I)
-            {
-                GameController.I.onGameStateChanged.RemoveListener(GameStateChangeHandler);
-            }
-        }
-
-        private void GameStateChangeHandler(GameState newState)
-        {
-            switch (newState)
-            {
-                case GameState.IN_GAME:
-                    // game started, start timer.
-                    StartCoroutine(CoroutineTimerStart());
-                    break;
-                case GameState.COMPLETE:
-                case GameState.GAMEOVER:
-                    break;
-            }
-        }
-        #endregion
     }
 }

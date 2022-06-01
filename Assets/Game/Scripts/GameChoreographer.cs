@@ -15,6 +15,9 @@ namespace gotoandplay
         [Header("Joystick reference")]
         public GameObject mJoystick;
 
+        [Header("UI/Views reference")]
+        public GameObject uiGameHud;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -33,6 +36,7 @@ namespace gotoandplay
                 DOVirtual.DelayedCall(3f, () =>
                 {
                     // start the game
+                    uiGameHud.SetActive(true);
                     mJoystick.SetActive(true);
                     GameController.I.SetGameState(GameState.IN_GAME);
                 });

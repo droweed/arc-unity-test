@@ -13,6 +13,9 @@ namespace gotoandplay
     {
         public Transform target;
         public float damageInterval = 0.5f;
+
+        public AudioClip collideClip;
+
         private bool canDamage;
 
         private void Start()
@@ -23,21 +26,34 @@ namespace gotoandplay
         void Init()
         {
             canDamage = true;
+            if(target == null)
+            {
+                target = GameObject.FindGameObjectWithTag("Player").transform;
+            }
         }
 
         private void OnCollisionStay(Collision other)
         {
-            if (other.gameObject.CompareTag("Player") && canDamage)
+            if (other.gameObject.CompareTag("Player") && CanInteract())
             {
                 var collidable = other.gameObject.GetComponent<ICollidable>();
+                // deduct player points
                 collidable.DeductPoints(GameConstants.HitDeductValue);
+                // play collide sfx
+                AudioController.Instance.PlayOneShot(collideClip);
 
+                // we toggle this flag so enemy cannot spam damage.
                 canDamage = false;
                 DOVirtual.DelayedCall(damageInterval, () =>
                 {
                     canDamage = true;
                 });
             }
+        }
+
+        private bool CanInteract()
+        {
+            return canDamage && !GameController.I.IsLevelComplete;
         }
     }
 }
